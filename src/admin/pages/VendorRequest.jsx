@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 import {
   useGetAllVendorsShopsQuery,
   useUpdateVendorStatusMutation,
 } from "../redux/apis/Vendorsapi";
+import VendorDetailsForm from "./VendorDetailsForm";
+import { useParams, useNavigate } from "react-router-dom";
 
 const VendorRequest = () => {
-  const navigate = useNavigate();
+  const { id } = useParams();
   const { data, isLoading, isError, refetch } = useGetAllVendorsShopsQuery();
-  const [updateVendorStatus, { isLoading: isUpdating }] = useUpdateVendorStatusMutation();
+  const [updateVendorStatus, { isLoading: isUpdating }] =
+    useUpdateVendorStatusMutation(id);
+
+  const navigate = useNavigate();
+
+  const [selectedVendorId, setSelectedVendorId] = useState(null); // 🆕 modal state
 
   const pendingVendors = (data?.shops || []).filter(
     (shop) => shop.isApproved?.toLowerCase() === "pending"
@@ -39,31 +45,47 @@ const VendorRequest = () => {
           <div>Action</div>
         </div>
 
-        {/* Conditional rendering */}
+        {/* Vendor List */}
         {isLoading ? (
           <div className="text-center py-8 text-gray-500">Loading...</div>
         ) : isError ? (
-          <div className="text-center py-8 text-red-500">Failed to load requests.</div>
+          <div className="text-center py-8 text-red-500">
+            Failed to load requests.
+          </div>
         ) : pendingVendors.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">No pending requests found.</div>
+          <div className="text-center py-8 text-gray-500">
+            No pending requests found.
+          </div>
         ) : (
           pendingVendors.map((vendor) => (
             <div
               key={vendor._id}
               className="grid grid-cols-1 lg:grid-cols-7 px-6 py-4 text-gray-700 border-b text-base gap-y-2 lg:gap-y-0 items-start lg:items-center"
             >
-              <div><span className="lg:hidden font-semibold">Name: </span>{vendor.ownerName}</div>
-              <div><span className="lg:hidden font-semibold">Contact: </span>{vendor.ownerNumber}</div>
+              <div>
+                <span className="lg:hidden font-semibold">Name: </span>
+                {vendor.ownerName}
+              </div>
+              <div>
+                <span className="lg:hidden font-semibold">Contact: </span>
+                {vendor.ownerNumber}
+              </div>
               <div className="whitespace-pre-wrap text-gray-500">
-                <span className="lg:hidden font-semibold">Address: </span>{vendor.ownerAddress}
+                <span className="lg:hidden font-semibold">Address: </span>
+                {vendor.ownerAddress}
               </div>
               <div className="text-gray-500">
-                <span className="lg:hidden font-semibold">Email: </span>{vendor.ownerEmail}
+                <span className="lg:hidden font-semibold">Email: </span>
+                {vendor.ownerEmail}
               </div>
               <div>
                 <span className="lg:hidden font-semibold">Details: </span>
                 <button
-                  onClick={() => navigate(`/admin/vendor-details/${vendor._id}`, { state: vendor })}
+                  onClick={() =>
+                    navigate(`/admin/vendor-details-form/${vendor._id}`, {
+                      state: vendor,
+                    })
+                  }
                   className="text-blue-600 underline p-1"
                 >
                   View
@@ -96,6 +118,21 @@ const VendorRequest = () => {
           ))
         )}
       </div>
+
+      {/* 🆕 VendorDetailsForm as Modal */}
+      {/* {selectedVendorId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+            <button
+              className="absolute top-2 right-4 text-red-500 text-2xl"
+              onClick={() => setSelectedVendorId(null)}
+            >
+              ✕
+            </button>
+            <VendorDetailsForm vendorId={selectedVendorId} />
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

@@ -8,11 +8,12 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import VendorsTotalOrders from "./VendorsTotalOrders";
 import VendorTotalFoodItem from "./VendorTotalFoodItem";
 import VendorTotalRevenu from "./VendorTotalRevenu";
+import VendorDetailsForm from "./VendorDetailsForm.jsx";
 import { useGetVendorsDetailsQuery } from "../redux/apis/Vendorsapi";
 
 const VendorDetails = () => {
   const { id } = useParams();
-  const [showSection, setShowSection] = useState("orders");
+  const [showSection, setShowSection] = useState("details"); // default to form
   const { data: vendor, isLoading, isError } = useGetVendorsDetailsQuery(id);
 
   return (
@@ -34,7 +35,6 @@ const VendorDetails = () => {
 
       {/* Section Tabs */}
       <div className="flex text-black gap-12 justify-center px-8 cursor-pointer">
-        {/* Total Orders */}
         <div
           onClick={() => setShowSection("orders")}
           className={`bg-white p-5 space-y-3 w-1/3 rounded-xl transition ${
@@ -48,7 +48,6 @@ const VendorDetails = () => {
           </div>
         </div>
 
-        {/* Total Food Item */}
         <div
           onClick={() => setShowSection("food")}
           className={`bg-white p-5 space-y-3 w-1/3 rounded-xl transition ${
@@ -62,7 +61,6 @@ const VendorDetails = () => {
           </div>
         </div>
 
-        {/* Total Revenue */}
         <div
           onClick={() => setShowSection("revenue")}
           className={`bg-white p-5 space-y-3 w-1/3 rounded-xl transition ${
@@ -76,80 +74,39 @@ const VendorDetails = () => {
         </div>
       </div>
 
-      {/* Dynamic Section Content */}
+      {/* Vendor Details Form with scroll */}
+      {showSection === "details" && (
+        <div className="">
+          {isLoading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : isError ? (
+            <p className="text-red-500">Failed to load vendor details</p>
+          ) : (
+            <div className="">
+              <VendorDetailsForm vendor={vendor} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Orders */}
       {showSection === "orders" && (
         <div className="pt-8 px-8">
           <VendorsTotalOrders />
         </div>
       )}
 
+      {/* Food Items */}
       {showSection === "food" && (
         <div className="pt-8 px-8">
           <VendorTotalFoodItem />
         </div>
       )}
 
+      {/* Revenue */}
       {showSection === "revenue" && (
         <div className="pt-8 px-8">
           <VendorTotalRevenu />
-        </div>
-      )}
-
-      {/* Optional: Vendor Details Section */}
-      {showSection === "details" && (
-        <div className="p-8 pb-0">
-          <div className="bg-white rounded-xl p-6 mb-6 space-y-4">
-            <h2 className="text-xl font-semibold mb-4 text-black">
-              Vendor Details
-            </h2>
-
-            {isLoading ? (
-              <p className="text-gray-500">Loading...</p>
-            ) : isError ? (
-              <p className="text-red-500">Failed to load vendor details</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-6 text-md bg-[#D9D9D94D] p-6">
-                <div>
-                  <label className="block text-gray-500 mb-1">
-                    Vendor Name
-                  </label>
-                  <input
-                    type="text"
-                    value={vendor?.ownerName || ""}
-                    disabled
-                    className="w-full bg-white rounded-md p-3 text-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-500 mb-1">Email</label>
-                  <input
-                    type="text"
-                    value={vendor?.ownerEmail || ""}
-                    disabled
-                    className="w-full bg-white rounded-md p-3 text-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-500 mb-1">Mobile No</label>
-                  <input
-                    type="text"
-                    value={vendor?.ownerNumber || ""}
-                    disabled
-                    className="w-full bg-white rounded-md p-3 text-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-500 mb-1">Address</label>
-                  <input
-                    type="text"
-                    value={vendor?.ownerAddress || ""}
-                    disabled
-                    className="w-full bg-white rounded-md p-3 text-black"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       )}
     </div>

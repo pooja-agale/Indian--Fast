@@ -22,6 +22,7 @@ import VendorTotalRevenu from '../pages/VendorTotalRevenu';
 import VendorRequest from '../pages/VendorRequest';
 import AddBannerForm from '../pages/AddBannerForm';
 import AddCategoryForm from '../pages/AddCategoryForm';
+import VendorDetailsForm from '../pages/VendorDetailsForm';
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="vendor" element={<Vendor />} />
         <Route path="vendor-details/:id" element={<VendorDetails />} />
         <Route path="user-details/:id" element={<UserDetails />} />
+        <Route path='vendor-details-form/:id' element={< VendorDetailsForm/>}/>
         <Route path="delivery-partners" element={<DeliverPartners />} />
         <Route path="delivery-partners/:id" element={<DeliveryPartnerDetails />} />
         <Route path="request" element={<DeliveryPartnerRequest />} />
