@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { useGetAllDeliveryPartnerQuery } from "../redux/apis/DeliveryPartnerapi";
 
 const DeliveryPartnerDetails = () => {

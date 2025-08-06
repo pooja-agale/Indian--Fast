@@ -51,12 +51,16 @@ const AddBanner = () => {
       {/* Banner Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white h-[540px] p-8 rounded-xl">
         {banners?.data?.map((banner) => (
-          <div key={banner._id} className="relative flex flex-col items-center">
+          <div
+            key={banner._id}
+            className="relative flex flex-col items-center "
+          >
             <img
               src={banner.image}
               alt="Banner"
-              className="object-cover rounded-lg"
+              className="w-[300px] h-[180px] object-cover rounded-lg"
             />
+
             <button
               className="mt-4 text-red-500 hover:text-red-700 transition text-xl"
               onClick={() => handleDelete(banner._id)}

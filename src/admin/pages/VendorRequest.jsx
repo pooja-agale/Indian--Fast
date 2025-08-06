@@ -17,6 +17,8 @@ const VendorRequest = () => {
   const navigate = useNavigate();
 
   const [selectedVendorId, setSelectedVendorId] = useState(null); // 🆕 modal state
+  const [isModelOpen, setIsModalOpen] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState(false);
 
   const pendingVendors = (data?.shops || []).filter(
     (shop) => shop.isApproved?.toLowerCase() === "pending"
@@ -29,6 +31,16 @@ const VendorRequest = () => {
     } catch (error) {
       console.error("Status update failed:", error);
     }
+  };
+
+  const handleViewClick = (vendor) => {
+    setSelectedVendor(vendor);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedVendor(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -60,7 +72,7 @@ const VendorRequest = () => {
           pendingVendors.map((vendor) => (
             <div
               key={vendor._id}
-              className="grid grid-cols-1 lg:grid-cols-7 px-6 py-4 text-gray-700 border-b text-base gap-y-2 lg:gap-y-0 items-start lg:items-center"
+              className="grid grid-cols-1 lg:grid-cols-7 px-6 py-4 text-gray-700 border-b text-base gap-y-4 lg:gap-y-0 items-start lg:items-center space-y-4 lg:space-y-0"
             >
               <div>
                 <span className="lg:hidden font-semibold">Name: </span>
@@ -81,11 +93,7 @@ const VendorRequest = () => {
               <div>
                 <span className="lg:hidden font-semibold">Details: </span>
                 <button
-                  onClick={() =>
-                    navigate(`/admin/vendor-details-form/${vendor._id}`, {
-                      state: vendor,
-                    })
-                  }
+                  onClick={() => handleViewClick(vendor)}
                   className="text-blue-600 underline p-1"
                 >
                   View
@@ -120,19 +128,21 @@ const VendorRequest = () => {
       </div>
 
       {/* 🆕 VendorDetailsForm as Modal */}
-      {/* {selectedVendorId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+      {isModelOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg relative max-w-3xl w-full">
             <button
-              className="absolute top-2 right-4 text-red-500 text-2xl"
-              onClick={() => setSelectedVendorId(null)}
+              onClick={handleCloseModal}
+              className="absolute top-2 right-2 text-red-600 text-2xl font-bold"
             >
               ✕
             </button>
-            <VendorDetailsForm vendorId={selectedVendorId} />
+
+            {/* RENDER THE VENDOR FORM HERE */}
+            <VendorDetailsForm passedVendor={selectedVendor} />
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

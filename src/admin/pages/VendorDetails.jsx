@@ -83,7 +83,7 @@ const VendorDetails = () => {
             <p className="text-red-500">Failed to load vendor details</p>
           ) : (
             <div className="">
-              <VendorDetailsForm vendor={vendor} />
+              <VendorDetailsForm passedVendor={vendor?.shop} />
             </div>
           )}
         </div>
