@@ -3,15 +3,20 @@ import { FaUsers, FaMoneyBill } from "react-icons/fa";
 import { GiForkKnifeSpoon } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUsersQuery } from "../redux/apis/Userapis";
+import { useGetAllVendorsShopsQuery } from '../redux/apis/Vendorsapi';
 
 
 const DashboardCards = () => {
   const navigate = useNavigate();
 
-  const { data: usersData, isLoading: usersLoading } = useGetAllUsersQuery();
+  const { data: usersData, isLoading: usersLoading, isError: usersError } = useGetAllUsersQuery();
+  const {data: vendorData, isLoading: vendorLoading, isError: vendorError} = useGetAllVendorsShopsQuery();
+
+  console.log("VendorData" , vendorData);
+  
 
   
-  const vendorCount = 12; 
+  const vendorCount = vendorLoading ? "Loading..." : vendorData?.shops?.length || 0; 
   const transactionCount = 48; 
 
   const dashboardStats = [

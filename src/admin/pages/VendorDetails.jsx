@@ -9,12 +9,42 @@ import VendorsTotalOrders from "./VendorsTotalOrders";
 import VendorTotalFoodItem from "./VendorTotalFoodItem";
 import VendorTotalRevenu from "./VendorTotalRevenu";
 import VendorDetailsForm from "./VendorDetailsForm.jsx";
-import { useGetVendorsDetailsQuery } from "../redux/apis/Vendorsapi";
+import { useGetVendorsDetailsQuery, useDeleteVendorsShopsMutation } from "../redux/apis/Vendorsapi";
+import { useGetUserByIdQuery } from "../redux/apis/Userapis.js";
 
 const VendorDetails = () => {
   const { id } = useParams();
-  const [showSection, setShowSection] = useState("details"); // default to form
-  const { data: vendor, isLoading, isError } = useGetVendorsDetailsQuery(id);
+  const [showSection, setShowSection] = useState("details");
+  const {
+    data: vendor,
+    isLoading: vendorLoading,
+    isError: vendorError,
+  } = useGetVendorsDetailsQuery(id);
+  const [deleteVendor] = useDeleteVendorsShopsMutation();
+
+  const handleDeleteVendor = async () => {
+    if (!shopId) return alert("Shop ID not found!");
+    if (window.confirm("Are you sure you want to delete this vendor?")) {
+      try {
+        await deleteVendor(shopId).unwrap();
+        alert("Vendor deleted successfully!");
+        navigate("/vendor"); // redirect after deletion
+      } catch (error) {
+        console.error("Failed to delete vendor:", error);
+        alert("Error deleting vendor.");
+      }
+    }
+  };
+
+  const shopId = vendor?.shop?._id;
+
+  const {
+    data: user,
+    isLoading: userLoading,
+    isError: userError,
+  } = useGetUserByIdQuery(shopId);
+
+  console.log(user);
 
   return (
     <div className="pt-12 px-4">
@@ -29,7 +59,7 @@ const VendorDetails = () => {
         <div className="flex text-black items-center p-8">
           <IoCallOutline size={40} className="mr-2" />
           <h3 className="text-xl mr-8">{vendor?.shop?.ownerNumber || ""}</h3>
-          <CiTrash className="text-red-600" size={30} />
+          <CiTrash className="text-red-600" size={30} onClick={handleDeleteVendor}/>
         </div>
       </div>
 
@@ -44,7 +74,9 @@ const VendorDetails = () => {
           <h4 className="text-2xl">Total Orders</h4>
           <div className="flex gap-4 items-center">
             <LuCalendarDays className="text-[#FF9F03]" size={30} />
-            <h4 className="text-3xl">35</h4>
+            <h4 className="text-3xl">
+              {userLoading ? "..." : user?.orders?.length || 0}
+            </h4>
           </div>
         </div>
 
@@ -77,9 +109,9 @@ const VendorDetails = () => {
       {/* Vendor Details Form with scroll */}
       {showSection === "details" && (
         <div className="">
-          {isLoading ? (
+          {vendorLoading ? (
             <p className="text-gray-500">Loading...</p>
-          ) : isError ? (
+          ) : vendorError ? (
             <p className="text-red-500">Failed to load vendor details</p>
           ) : (
             <div className="">

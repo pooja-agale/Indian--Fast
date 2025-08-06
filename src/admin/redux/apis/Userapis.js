@@ -20,7 +20,13 @@ export const api = createApi({
         method: 'DELETE',
       }),
     }),
+    getUserById: builder.query({
+      query:(id) => ({
+       url: `/user/order/shop/${id}`,
+       method: 'GET',
+      })
+    })
   }),
 });
 
-export const { useGetAllUsersQuery, useDeleteUserMutation } = api;
+export const { useGetAllUsersQuery, useDeleteUserMutation, useGetUserByIdQuery } = api;

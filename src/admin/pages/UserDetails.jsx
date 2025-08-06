@@ -12,6 +12,9 @@ const UserDetails = () => {
   const { id } = useParams();
   const { data: userData, isError, isLoading } = useGetAllUsersQuery();
 
+  console.log("User Data", userData);
+  
+
   const [showTable, setShowTable] = useState(false);
   const [orderType, setOrderType] = useState("completed");
 

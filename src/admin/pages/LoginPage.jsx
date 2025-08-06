@@ -5,7 +5,6 @@ import {
   useVerifyOtpMutation,
 } from "../redux/apis/Auth"; // adjust path as needed
 
-
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -50,7 +49,6 @@ const LoginPage = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="w-full max-w-md p-6 flex flex-col items-center">
@@ -77,21 +75,25 @@ const LoginPage = () => {
         />
 
         <div className="w-full flex gap-4">
-          <button
-            onClick={handleSendOtp}
-            disabled={isSending}
-            className="w-1/2 bg-[#F59E0B] hover:bg-[#d48806] text-white font-semibold py-2 px-4 rounded-md"
-          >
-            {isSending ? "Sending..." : "Send OTP"}
-          </button>
+          {step === 1 && (
+            <button
+              onClick={handleSendOtp}
+              disabled={isSending}
+              className="w-1/2 bg-[#F59E0B] hover:bg-[#d48806] text-white font-semibold py-2 px-4 rounded-md"
+            >
+              {isSending ? "Sending..." : "Send OTP"}
+            </button>
+          )}
 
-          <button
-            onClick={handleVerifyOtp}
-            disabled={isVerifying}
-            className="w-1/2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md"
-          >
-            {isVerifying ? "Verifying..." : "Login"}
-          </button>
+          {step === 2 && (
+            <button
+              onClick={handleVerifyOtp}
+              disabled={isVerifying}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md"
+            >
+              {isVerifying ? "Verifying..." : "Login"}
+            </button>
+          )}
         </div>
       </div>
     </div>
